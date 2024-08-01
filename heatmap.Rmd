@@ -1,0 +1,69 @@
+---
+title: "heatmap"
+author: "Yang Wu"
+date: "2024-08-01"
+output: html_document
+---
+
+
+
+
+```{r}
+library(readxl)
+
+# Set the working directory to your folder
+setwd("C:/Users/Yang/Dropbox/家燕/越冬地经纬度")
+
+# List all CSV files in the directory
+csv_files <- list.files(pattern = "*.csv")
+
+# Function to read, transform, and save each file
+process_files <- function(file) {
+  # Read the file as an Excel file
+  data <- read_excel(file)
+  
+  # Add a new column with the file name
+  data$file_name <- file
+  
+  # Define the new file name for saving
+  new_file_name <- sub("\\.csv$", "_converted.csv", file)
+  
+  # Save the transformed data as a new CSV file
+  write.csv(data, new_file_name, row.names = FALSE)
+  
+  # Optional: Print the first few rows to confirm
+  print(head(data))
+}
+
+# Apply the function to all files
+lapply(csv_files, process_files)
+
+```
+
+
+```{r}
+# Set the working directory to your folder
+setwd("C:/Users/Yang/Dropbox/家燕/越冬地经纬度")
+
+# List all the transformed CSV files (those ending with "_converted.csv")
+converted_csv_files <- list.files(pattern = "*_converted.csv")
+
+# Function to read and combine the files
+combine_files <- function(file_list) {
+  combined_data <- do.call(rbind, lapply(file_list, function(file) {
+    read.csv(file)
+  }))
+  return(combined_data)
+}
+
+# Combine all the transformed CSV files into one data frame
+combined_data <- combine_files(converted_csv_files)
+
+# Save the combined data to a new CSV file
+write.csv(combined_data, "combined_all_files.csv", row.names = FALSE)
+
+# Optional: View the first few rows of the combined data
+head(combined_data)
+
+```
+
